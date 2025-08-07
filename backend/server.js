@@ -7,8 +7,15 @@ dotenv.config(); // load env variables
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const cors = require('cors');
 
-app.use(cors());
+// Allow all origins OR restrict to only Vercel
+app.use(cors({
+  origin: ['https://study-cards-manager.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI, {
