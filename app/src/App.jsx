@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
 
-const API_URL = import.meta.env.VITE_API_URL;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 
 
@@ -19,13 +19,13 @@ function App() {
   const cardsPerPage=3;
 
   useEffect(() =>{
-   axios.get(API_URL).then((res) => setFlashcard(res.data))
+   axios.get(VITE_API_URL).then((res) => setFlashcard(res.data))
   },[])
 
   const addFlashCard=async()=>{
     if(question && answer){
       const newCard= {question,answer};
-      const res=await axios.post(API_URL,newCard);
+      const res=await axios.post(VITE_API_URL,newCard);
       setFlashcard([...flashcard,res.data])
       setQuestion('')
       setAnswer('')
@@ -36,7 +36,7 @@ function App() {
   const knownCards=flashcard.filter((card) => card.known).length
 
   const editFlashCard=async(id,updatedQuestion,updatedAnswer)=>{
-    const res=await axios.put(`${API_URL}/${id}`,{
+    const res=await axios.put(`${VITE_API_URL}/${id}`,{
     question:updatedQuestion,
     answer:updatedAnswer
   })
@@ -45,11 +45,11 @@ function App() {
 }
 
 const deletedCard=async(id) =>{
-  await axios.delete(`${API_URL}/${id}`)
+  await axios.delete(`${VITE_API_URL}/${id}`)
   setFlashcard(flashcard.filter((card) => card._id !== id))
 }
 const toggleKnown=async(id,known) =>{
-  const res= await axios.put(`${API_URL}/${id}`, {known:!known})
+  const res= await axios.put(`${VITE_API_URL}/${id}`, {known:!known})
   setFlashcard(flashcard.map((card) => (card._id === id ? res.data:card)))
 }
 
