@@ -7,24 +7,28 @@ dotenv.config(); // load env variables
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const cors = require('cors');
 
-// Allow all origins OR restrict to only Vercel
+// ✅ Allow both localhost (dev) and Vercel (prod)
 app.use(cors({
-  origin: ['https://study-cards-manager.vercel.app'],
+  origin: [
+    'http://localhost:5173',   // React dev server
+    'https://study-cards-manager.vercel.app' // deployed frontend
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
 app.use(express.json());
 
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('Connected to MongoDB'))
-.catch((err) => console.error('MongoDB connection error:', err));
+.then(() => console.log('✅ Connected to MongoDB'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
+// ✅ Flashcard schema & model
 const flashcardSchema = new mongoose.Schema({
   question: { type: String, required: true },
   answer: { type: String, required: true },
@@ -33,6 +37,7 @@ const flashcardSchema = new mongoose.Schema({
 
 const Flashcard = mongoose.model("Flashcard", flashcardSchema);
 
+// ✅ Create flashcard
 app.post('/flashcard', async (req, res) => {
   try {
     const card = await Flashcard.create(req.body);
@@ -42,6 +47,7 @@ app.post('/flashcard', async (req, res) => {
   }
 });
 
+// ✅ Get all flashcards
 app.get('/flashcard', async (req, res) => {
   try {
     const cards = await Flashcard.find();
@@ -51,6 +57,7 @@ app.get('/flashcard', async (req, res) => {
   }
 });
 
+// ✅ Update flashcard
 app.put('/flashcard/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,6 +68,7 @@ app.put('/flashcard/:id', async (req, res) => {
   }
 });
 
+// ✅ Delete flashcard
 app.delete('/flashcard/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -71,6 +79,7 @@ app.delete('/flashcard/:id', async (req, res) => {
   }
 });
 
+// ✅ Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
